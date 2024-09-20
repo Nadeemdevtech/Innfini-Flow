@@ -19487,8 +19487,8 @@
         "wires": [
             [
                 "53e1cebc8b7c535c",
-                "b22ea7876e26dee2",
-                "b95afab05958c887"
+                "b95afab05958c887",
+                "b22ea7876e26dee2"
             ]
         ]
     },
@@ -19566,7 +19566,7 @@
         "type": "function",
         "z": "b0648658.d6e708",
         "name": "Prepare message for master",
-        "func": "var batchData = JSON.parse(msg.payload);\nconst batch = batchData.data[0].Batch;\nconst materialCode = batchData.data[0].Material_Code;\n\n// Construct the URL with the extracted parameters\nmsg.url = \"http://139.59.151.223:5000/core/thing-type/661f5436174cde64b663fbf4/MATERIAL_AND_BATCH_MASTER/all?Batch=\" + batch + \"&Material=\" + materialCode;\n\n// Return the modified message object\nreturn msg;\n",
+        "func": "var batchData = JSON.parse(msg.payload);\nnode.warn(batchData)\nconst batch = batchData.data[0].Batch;\nconst materialCode = batchData.data[0].Material_Code;\n\n// Construct the URL with the extracted parameters\nmsg.url = \"http://139.59.151.223:5000/core/thing-type/661f5436174cde64b663fbf4/MATERIAL_AND_BATCH_MASTER/all?Batch=\" + batch + \"&Material=\" + materialCode;\n\n// Return the modified message object\nreturn msg;\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -20374,7 +20374,7 @@
         "propertyType": "msg",
         "rules": [
             {
-                "t": "eq",
+                "t": "neq",
                 "v": "201",
                 "vt": "num"
             }
