@@ -4723,7 +4723,7 @@
         "type": "function",
         "z": "10d82e1f.f08ab2",
         "name": "Pallet Data",
-        "func": "var server = global.get(\"server\");\n\nif (msg.statusCode !== 200) {\n    node.warn(\" ----- ERROR Bridge Response ---- \");\n    node.warn(msg.payload);\n    node.warn(msg.headers);\n    node.warn(msg.statusCode);\n    node.warn(msg.responseUrl);\n    msg.tmp = 0;\n    return msg;\n} else {\n    node.warn(\" ***** Successfully processed Pallet Data request ***** \");\n\n    var results = msg.payload.data;\n    node.warn(results);\n\n    var toResponse = [];\n    if (results && !results.length) {\n        msg.payload = {\"response\": \"Invalid Pallet data request. No information found.\"};\n        statusCode = 400;\n        msg.toContinue = 0;\n    } else {\n        for (var i = 0; i < results.length; i++) {\n            var palletdata = \"{\\\"serialNumber\\\":\\\"\" + results[i].RAKPALLET.serialNumber + \"\\\"\";\n            var Material_Master = results[i].Material_Master;\n            var Material_Code = results[i].Material_Code;\n\n            if (results[i].Production_Date) {\n                var Production_Date = results[i].Production_Date; // Already in ISO format\n                palletdata += \",\\\"Production_Date\\\":\\\"\" + Production_Date + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Production_Date\\\":\\\"\\\"\";\n            }\n\n            if (results[i].huitem) {\n                palletdata += \",\\\"huitem\\\":\\\"\" + results[i].huitem + \"\\\"\";\n            } else {\n                palletdata += \",\\\"huitem\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Material_Code) {\n                palletdata += \",\\\"Material\\\":\\\"\" + results[i].Material_Code + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Material\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Material_Master) {\n                palletdata += \",\\\"Material_Master\\\":\\\"\" + Material_Master + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Material_Master\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Batch) {\n                palletdata += \",\\\"Batch\\\":\\\"\" + results[i].Batch + \"\\\"\";\n                var Batch = results[i].Batch;\n            } else {\n                palletdata += \",\\\"Batch\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Qty) {\n                palletdata += \",\\\"Qty\\\":\\\"\" + results[i].Qty + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Qty\\\":\\\"\\\"\";\n            }\n\n            if (results[i].location) {\n                let coordinates = results[i].location.coordinates;\n                let locationString = coordinates.join(';') + \";0.0\"; // Convert coordinates array to string and add \";0.0\"\n                palletdata += \",\\\"location\\\":\\\"\" + locationString + \"\\\"\";\n            } else {\n                palletdata += \",\\\"location\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.LocationDetails) {\n                palletdata += \",\\\"LocationDetails\\\":\\\"\" + results[i].RAKPALLET.LocationDetails + \"\\\"\";\n            } else {\n                palletdata += \",\\\"LocationDetails\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.StorageLocation) {\n                palletdata += \",\\\"StorageLocation\\\":\\\"\" + results[i].RAKPALLET.StorageLocation + \"\\\"\";\n            } else {\n                palletdata += \",\\\"StorageLocation\\\":\\\"\\\"\";\n            }\n\n           if (results[i].RAKPALLET && results[i].RAKPALLET.Lane) {\n                palletdata += \",\\\"Lane\\\":\\\"\" + results[i].RAKPALLET.Lane + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Lane\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.BinLocation) {\n                palletdata += \",\\\"BinLocation\\\":\\\"\" + results[i].RAKPALLET.BinLocation + \"\\\"\";\n            } else {\n                palletdata += \",\\\"BinLocation\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.L5Location) {\n                palletdata += \",\\\"L5Location\\\":\\\"\" + results[i].RAKPALLET.L5Location + \"\\\"\";\n            } else {\n                palletdata += \",\\\"L5Location\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET.ProcessTime) {\n                var Process_Time = results[i].RAKPALLET.ProcessTime; // Already in ISO format\n                palletdata += \",\\\"ProcessTime\\\":\\\"\" + Process_Time + \"\\\"\";\n            } else {\n                palletdata += \",\\\"ProcessTime\\\":\\\"\\\"\";\n            }\n\n            if (results[i].M2_PC_RM_Available) {\n                palletdata += \",\\\"M2_PC_RM_Available\\\":\\\"\" + results[i].M2_PC_RM_Available + \"\\\"\";\n            } else {\n                palletdata += \",\\\"M2_PC_RM_Available\\\":\\\"\\\"\";\n            }\n\n            if (results[i].M2_PC_RM_Per_Box_Numeric) {\n                palletdata += \",\\\"M2_PC_RM_Per_Box_Numeric\\\":\\\"\" + results[i].M2_PC_RM_Per_Box_Numeric + \"\\\"\";\n            } else {\n                palletdata += \",\\\"M2_PC_RM_Per_Box_Numeric\\\":\\\"\\\"\";\n            }\n\n            palletdata += \"}\";\n\n            toResponse.push(JSON.parse(palletdata));\n        }\n        \n        msg.url = \"http://139.59.151.223:5000/core/thing-type/661f5436174cde64b663fbf4/HUITEM/material/sum?Material_Code=\" + Material_Code + \"Batch= \"+Batch+\"\";\n        msg.toResponse = toResponse;\n        msg.toContinue = 1;\n    }\n\n    return msg;\n}\n",
+        "func": "var server = global.get(\"server\");\n\nif (msg.statusCode !== 200) {\n    node.warn(\" ----- ERROR Bridge Response ---- \");\n    node.warn(msg.payload);\n    node.warn(msg.headers);\n    node.warn(msg.statusCode);\n    node.warn(msg.responseUrl);\n    msg.tmp = 0;\n    return msg;\n} else {\n    node.warn(\" ***** Successfully processed Pallet Data request ***** \");\n\n    var results = msg.payload.data;\n    node.warn(results);\n\n    var toResponse = [];\n    if (results && !results.length) {\n        msg.payload = {\"response\": \"Invalid Pallet data request. No information found.\"};\n        statusCode = 400;\n        msg.toContinue = 0;\n    } else {\n        for (var i = 0; i < results.length; i++) {\n            var palletdata = \"{\\\"serialNumber\\\":\\\"\" + results[i].RAKPALLET.serialNumber + \"\\\"\";\n            var Material_Master = results[i].Material_Master;\n            var Material_Code = results[i].Material_Code;\n\n            if (results[i].Production_Date) {\n                var Production_Date = results[i].Production_Date; // Already in ISO format\n                palletdata += \",\\\"Production_Date\\\":\\\"\" + Production_Date + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Production_Date\\\":\\\"\\\"\";\n            }\n\n            if (results[i].huitem) {\n                palletdata += \",\\\"huitem\\\":\\\"\" + results[i].huitem + \"\\\"\";\n            } else {\n                palletdata += \",\\\"huitem\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Material_Code) {\n                palletdata += \",\\\"Material\\\":\\\"\" + results[i].Material_Code + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Material\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Material_Master) {\n                palletdata += \",\\\"Material_Master\\\":\\\"\" + Material_Master + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Material_Master\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Batch) {\n                palletdata += \",\\\"Batch\\\":\\\"\" + results[i].Batch + \"\\\"\";\n                var Batch = results[i].Batch;\n            } else {\n                palletdata += \",\\\"Batch\\\":\\\"\\\"\";\n            }\n\n            if (results[i].Qty) {\n                palletdata += \",\\\"Qty\\\":\\\"\" + results[i].Qty + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Qty\\\":\\\"\\\"\";\n            }\n\n            if (results[i].location) {\n                let coordinates = results[i].location.coordinates;\n                let locationString = coordinates.join(';') + \";0.0\"; // Convert coordinates array to string and add \";0.0\"\n                palletdata += \",\\\"location\\\":\\\"\" + locationString + \"\\\"\";\n            } else {\n                palletdata += \",\\\"location\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.LocationDetails) {\n                palletdata += \",\\\"LocationDetails\\\":\\\"\" + results[i].RAKPALLET.LocationDetails + \"\\\"\";\n            } else {\n                palletdata += \",\\\"LocationDetails\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.StorageLocation) {\n                palletdata += \",\\\"StorageLocation\\\":\\\"\" + results[i].RAKPALLET.StorageLocation + \"\\\"\";\n            } else {\n                palletdata += \",\\\"StorageLocation\\\":\\\"\\\"\";\n            }\n\n           if (results[i].RAKPALLET && results[i].RAKPALLET.Lane) {\n                palletdata += \",\\\"Lane\\\":\\\"\" + results[i].RAKPALLET.Lane + \"\\\"\";\n            } else {\n                palletdata += \",\\\"Lane\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.BinLocation) {\n                palletdata += \",\\\"BinLocation\\\":\\\"\" + results[i].RAKPALLET.BinLocation + \"\\\"\";\n            } else {\n                palletdata += \",\\\"BinLocation\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET && results[i].RAKPALLET.L5Location) {\n                palletdata += \",\\\"L5Location\\\":\\\"\" + results[i].RAKPALLET.L5Location + \"\\\"\";\n            } else {\n                palletdata += \",\\\"L5Location\\\":\\\"\\\"\";\n            }\n            \n            if (results[i].RAKPALLET && results[i].RAKPALLET.GridID) {\n                palletdata += \",\\\"GridID\\\":\\\"\" + results[i].RAKPALLET.GridID + \"\\\"\";\n            } else {\n                palletdata += \",\\\"GridID\\\":\\\"\\\"\";\n            }\n\n            if (results[i].RAKPALLET.ProcessTime) {\n                var Process_Time = results[i].RAKPALLET.ProcessTime; // Already in ISO format\n                palletdata += \",\\\"ProcessTime\\\":\\\"\" + Process_Time + \"\\\"\";\n            } else {\n                palletdata += \",\\\"ProcessTime\\\":\\\"\\\"\";\n            }\n\n            if (results[i].M2_PC_RM_Available) {\n                palletdata += \",\\\"M2_PC_RM_Available\\\":\\\"\" + results[i].M2_PC_RM_Available + \"\\\"\";\n            } else {\n                palletdata += \",\\\"M2_PC_RM_Available\\\":\\\"\\\"\";\n            }\n\n            if (results[i].M2_PC_RM_Per_Box_Numeric) {\n                palletdata += \",\\\"M2_PC_RM_Per_Box_Numeric\\\":\\\"\" + results[i].M2_PC_RM_Per_Box_Numeric + \"\\\"\";\n            } else {\n                palletdata += \",\\\"M2_PC_RM_Per_Box_Numeric\\\":\\\"\\\"\";\n            }\n\n            palletdata += \"}\";\n\n            toResponse.push(JSON.parse(palletdata));\n        }\n        \n        msg.url = \"http://139.59.151.223:5000/core/thing-type/661f5436174cde64b663fbf4/HUITEM/material/sum?Material_Code=\" + Material_Code + \"Batch= \"+Batch+\"\";\n        msg.toResponse = toResponse;\n        msg.toContinue = 1;\n    }\n\n    return msg;\n}\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -28179,6 +28179,8 @@
         "console": false,
         "tostatus": false,
         "complete": "true",
+        "statusVal": "",
+        "statusType": "auto",
         "x": 670,
         "y": 380,
         "wires": []
@@ -28234,6 +28236,164 @@
         "info": "",
         "x": 200,
         "y": 640,
+        "wires": []
+    },
+    {
+        "id": "8327d94338f515f2",
+        "type": "inject",
+        "z": "29d858278349a4dd",
+        "name": "",
+        "props": [
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 310,
+        "y": 380,
+        "wires": [
+            [
+                "a6686df69921a3e0"
+            ]
+        ]
+    },
+    {
+        "id": "inject-node",
+        "type": "inject",
+        "z": "29d858278349a4dd",
+        "d": true,
+        "name": "Cron Job - Every 10 Minutes",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payloadType": "date",
+        "x": 170,
+        "y": 960,
+        "wires": [
+            [
+                "file-node"
+            ]
+        ]
+    },
+    {
+        "id": "file-node",
+        "type": "file in",
+        "z": "29d858278349a4dd",
+        "name": "Read Payload File",
+        "filename": "D:\\\\JSONFILE.txt",
+        "format": "utf8",
+        "allProps": false,
+        "x": 370,
+        "y": 920,
+        "wires": [
+            [
+                "parse-payloads"
+            ]
+        ]
+    },
+    {
+        "id": "parse-payloads",
+        "type": "function",
+        "z": "29d858278349a4dd",
+        "name": "Parse and Send Payloads",
+        "func": "const payloads = JSON.parse(msg.payload);\nmsg.payloads = payloads;\nmsg.index = 0;\nmsg.payload = payloads[0];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 960,
+        "wires": [
+            [
+                "send-payload"
+            ]
+        ]
+    },
+    {
+        "id": "send-payload",
+        "type": "http request",
+        "z": "29d858278349a4dd",
+        "name": "Send Payload",
+        "method": "POST",
+        "url": "http://example.com/endpoint",
+        "x": 780,
+        "y": 920,
+        "wires": [
+            [
+                "check-next-payload"
+            ]
+        ]
+    },
+    {
+        "id": "check-next-payload",
+        "type": "function",
+        "z": "29d858278349a4dd",
+        "name": "Check and Send Next Payload",
+        "func": "msg.index += 1;\nif (msg.index < msg.payloads.length) {\n    msg.payload = msg.payloads[msg.index];\n    return [msg, null];\n} else {\n    return [null, msg];\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 960,
+        "wires": [
+            [
+                "done-node",
+                "6abac765e99e4390"
+            ]
+        ]
+    },
+    {
+        "id": "6abac765e99e4390",
+        "type": "delay",
+        "z": "29d858278349a4dd",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "60",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1180,
+        "y": 940,
+        "wires": [
+            [
+                "send-payload"
+            ]
+        ]
+    },
+    {
+        "id": "done-node",
+        "type": "debug",
+        "z": "29d858278349a4dd",
+        "name": "Done",
+        "active": true,
+        "x": 1370,
+        "y": 960,
         "wires": []
     },
     {
